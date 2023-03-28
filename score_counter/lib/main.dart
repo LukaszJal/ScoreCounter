@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:random_avatar/random_avatar.dart';
 import 'package:score_counter/add_user_dialog.dart';
 import 'package:score_counter/userData.dart';
+import 'constans.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,11 +15,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Random Avatar example',
+      title: 'Game Score',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Random Example'),
+      home: const MyHomePage(title: 'Dodać nazwa gry edytowane'),
+      // Todo: dodać wdytowaną nazwę gry (np. scrable)
     );
   }
 }
@@ -48,16 +50,27 @@ class _MyHomePageState extends State<MyHomePage> {
   void _handleTap2(UserData value) {
     setState(() {
       _painters.add(
-        Row(
-          children: [
-            Text(idTmp.toString()),
-            Text(value.name),
-            value.avatar,
-          ],
+        Container(
+          padding: EdgeInsets.all(2.0),
+          width: screenSize().width,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(style: mainTextStyle, "$idTmp."),
+              //SizedBox(width: 20),
+              Text(style: mainTextStyle, value.name),
+              //SizedBox(width: 100),
+              value.avatar,
+            ],
+          ),
         ),
       );
       idTmp++;
     });
+  }
+
+  Size screenSize() {
+    return MediaQuery.of(context).size;
   }
 
   @override
@@ -66,16 +79,25 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Row(
+      body: Column(
         children: [
+          Container(
+            child: Text("Lista Graczy"),
+          ),
+          SizedBox(width: screenSize().width),
           SingleChildScrollView(
             child: Wrap(
               children: [
                 Column(
-                  children: [..._painters],
+                  children: [
+                    ..._painters,
+                  ],
                 ),
               ],
             ),
+          ),
+          Container(
+            child: Text("Liczba graczy: " + (idTmp - 1).toString()),
           ),
         ],
       ),
@@ -94,6 +116,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   builder: (context) => AddUserDialog(
                     onConfirm: (UserData value) {
                       _handleTap2(value);
+                      testUserGen(3);
                       // TODO add new UserData Object witch will be send to the next screen.
                     },
                   ),
@@ -106,5 +129,20 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
     );
+  }
+
+  void testUserGen(int numberTestUser) {
+    for (int i = 1; i < numberTestUser; i++) {
+      _handleTap2(
+        UserData(
+          "Marek testowy$i",
+          RandomAvatar(
+            DateTime.now().toIso8601String(),
+            height: 70,
+            width: 70,
+          ),
+        ),
+      );
+    }
   }
 }

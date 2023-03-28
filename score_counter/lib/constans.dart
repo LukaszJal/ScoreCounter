@@ -7,3 +7,5 @@ const inputDecoration = InputDecoration(
   border: OutlineInputBorder(),
   labelText: 'Gracz',
 );
+
+const mainTextStyle = TextStyle(fontSize: 24);
